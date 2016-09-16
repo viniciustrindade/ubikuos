@@ -1,6 +1,6 @@
 #!/env/bin/env python
 # -*- coding: utf-8 -*-
-import sqlite3
+import sqlite3, serial, time
 from flask import Flask,json, render_template, request
 
 
@@ -12,7 +12,45 @@ dbname='sensores.sqlite'
 @app.route('/')
 @app.route('/index')
 def index():
-        return render_template('index.html')
+        #return render_template('index.html')
+        return "Index route!"
+
+###################### Rotas #######################################
+@app.route('/command/turn-light')
+def setTurnLightON():
+        #return json.dumps(sensor_type_list)
+        return "command turn-light route!"
+
+
+@app.route('/login')
+def login():
+        #sensor_list = db_get_sensores()
+        #return json.dumps(sensor_list)
+        return "Login route route!"
+    
+
+@app.route('/list-services')
+def listAllServices():
+        #list = db_get_sensores()
+        #return json.dumps(list)  
+        return "List all services route!"
+    
+@app.route('/msg-to-arduino')    
+def sendMsgToArduino():
+    try:
+        ser = serial.Serial('/dev/ttyACM1', 9600)
+        while True:
+            ser.write('acende')
+            time.sleep(3)
+            ser.write('apaga')
+            time.sleep(3)
+            ser.write('pisca')
+            time.sleep(4)
+            ser.write('pisca')
+            time.sleep(4)
+    except Exception as e:
+        return "Opa! parece que o Arduino não está ligado!"
+
 
 @app.route('/create')
 def create_objects():
@@ -29,30 +67,33 @@ def create_objects():
                 return 'Failed to create Database and tables: '+ str(e)
 
 
-###################### Rotas #######################################
-@app.route('/command/turn-light')
-def getTipos():
-        return json.dumps(sensor_type_list)
+# display the contents of the database
+def createDatabase():
+        # conectando...
+        conn = sqlite3.connect(dbname)
+        # definindo um cursor
+        cursor = conn.cursor()
 
+        # criando a tabela (schema)
+        cursor.execute("""
+        CREATE TABLE LOG (
+            id           INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            usuario      VARCHAR(20),                                        
+            comando      VARCHAR(20),
+            local        VARCHAR(20),
+            ssid         VARCHAR(20),
+            data         TIMESTAMP
+        );
+        """)
+        # desconectando...
+        conn.close()
 
-@app.route('/login')
-def listAll():
-        sensor_list = db_get_sensores()
-
-        return json.dumps(sensor_list)
-    
-
-@app.route('/list-services')
-def listAll():
-        list = db_get_sensores()
-
-        return json.dumps(list)    
 
 # store the temperature in the database
-def db_insert_sensor(values=()):
+def insert_data(values=()):
                 conn=sqlite3.connect(dbname)
                 cur=conn.cursor()
-                query = 'INSERT INTO sensor (tipo_sensor) VALUES (%s)' % (
+                query = 'INSERT INTO LOG (usuario, comando, local, ssid, data) VALUES (%s, %s, %s, %s, %s)' % (
                                 ', '.join(['?'] * len(values))
                 )
                 cur.execute(query, values)
@@ -70,42 +111,6 @@ def display_data(sensor_id):
         rows=curs.fetchall() 
         return rows  
 
-# display all contents of the table SENSOR
-def db_get_sensores():
-        conn=sqlite3.connect(dbname)
-        curs=conn.cursor()
-        curs.execute("SELECT id FROM SENSOR")
-        rows=curs.fetchall() 
-        ar=[r[0] for r in rows]
-        return ar  
-
-# display all contents of the table SENSOR
-def db_get_sensor_type(sensor_id):
-
-        conn=sqlite3.connect(dbname)
-        curs=conn.cursor()
-        curs.execute("SELECT tipo_sensor FROM SENSOR WHERE id = (?) ",(sensor_id,))
-        rows=curs.fetchall() 
-
-        ar=[r[0] for r in rows]
-        if (len(ar) > 0):
-                return  ar[0]
-        else:
-                return None
-
-# display all contents of the table SENSOR
-def db_delete_sensor(sensor_id):
-
-        conn=sqlite3.connect(dbname)
-        curs=conn.cursor()
-        curs.execute("DELETE FROM SENSOR WHERE id = (?) ",(sensor_id,))
-        curs.execute("DELETE FROM LOG WHERE id_sensor = (?) ",(sensor_id,))
-        conn.commit()
-        curs.close()
-        conn.close()
-        return True
-
-
 def delete_data():
         conn=sqlite3.connect(dbname)
         curs=conn.cursor()
@@ -115,43 +120,6 @@ def delete_data():
         conn.close()
         return True  
 
-# display the contents of the database
-def createDatabase():
-        # conectando...
-        conn = sqlite3.connect(dbname)
-        # definindo um cursor
-        cursor = conn.cursor()
-
-        # criando a tabela (schema)
-        cursor.execute("""
-        CREATE TABLE LOG (
-                                        id         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                                        id_sensor      VARCHAR(20),
-                                        valor        DECIMAL(10,3),
-                                        unidade        VARCHAR(20),
-                                        variavel     VARCHAR(20),
-                                        data       TIMESTAMP
-        );
-        """)
-        # desconectando...
-        conn.close()
-
-# display the contents of the database
-def createSensor():
-        # conectando...
-        conn = sqlite3.connect(dbname)
-        # definindo um cursor
-        cursor = conn.cursor()
-
-        # criando a tabela (schema)
-        cursor.execute("""
-        CREATE TABLE SENSOR (
-                                        id      INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                                        tipo_sensor VARCHAR(20)
-        );
-        """)  
-        # desconectando...
-        conn.close()
 
 if __name__ == "__main__":
         app.run(host='0.0.0.0', port=8080,debug = True)
