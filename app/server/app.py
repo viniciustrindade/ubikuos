@@ -1,6 +1,6 @@
 #!/env/bin/env python
 # -*- coding: utf-8 -*-
-import sqlite3, serial, time
+import sqlite3, serial, time, datetime
 from flask import Flask,json, render_template, request
 
 app = Flask(__name__)
@@ -27,17 +27,24 @@ def setTurnLightON():
 @app.route('/login')
 def login():
     
-    username = request.args.get('username')
-    password = request.args.get('password')
-    ssid = request.args.get('ssid')
+    username    = request.args.get('username')
+    password    = request.args.get('password')
+    ssid        = request.args.get('ssid')
+    datahora    = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
     try:        
         if(username == user[0] and password == user[1]):
+            insert_data((username, "login", "IFBA/GSORT", ssid, datahora))
+            display_data()
             return json.dumps({ "message": "Bem vindo!" }), 200
         else:
             return json.dumps({ "error": "Login inválido!" }), 404
     except Exception as e:
         return json.dumps({ "error": "Desculpe, ocorreu um erro!" }), 500
     
+@app.route('/display-data')
+def listAllData():
+        list = display_data()
+        return json.dumps(list), 200
 
 @app.route('/list-services')
 def listAllServices():
@@ -70,15 +77,14 @@ def create_objects():
         Obs: Não executar caso o banco já esteja criado, pois será retornada uma msg de erro.
         """
         try:
-                createLog()
-                createSensor()
-                return 'Tabelas criadas com sucesso.'
+                createLog()                
+                return 'Tabela criada com sucesso.'
         except Exception, e:
                 return 'Failed to create Database and tables: '+ str(e)
 
 
 # display the contents of the database
-def createDatabase():
+def createLog():
         # conectando...
         conn = sqlite3.connect(dbname)
         # definindo um cursor
@@ -103,9 +109,9 @@ def createDatabase():
 def insert_data(values=()):
                 conn=sqlite3.connect(dbname)
                 cur=conn.cursor()
-                query = 'INSERT INTO LOG (usuario, comando, local, ssid, data) VALUES (%s, %s, %s, %s, %s)' % (
-                                ', '.join(['?'] * len(values))
-                )
+                query = 'INSERT INTO LOG (usuario, comando, local, ssid, data) VALUES (%s)' % (
+                                ', '.join(['?'] * len(values))                                        
+                )                
                 cur.execute(query, values)
                 conn.commit()
                 id = cur.lastrowid
@@ -114,10 +120,10 @@ def insert_data(values=()):
                 return id     
 
 # display the contents of the database
-def display_data(sensor_id):
+def display_data():
         conn=sqlite3.connect(dbname)
         curs=conn.cursor()
-        curs.execute("SELECT * FROM (SELECT time(data) AS data, valor, unidade FROM LOG WHERE id_sensor = (?) ORDER BY data DESC LIMIT 20) ORDER BY data ASC",(sensor_id,))
+        curs.execute("SELECT * FROM LOG ORDER BY data DESC")
         rows=curs.fetchall() 
         return rows  
 
