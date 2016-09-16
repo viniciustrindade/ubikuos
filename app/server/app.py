@@ -3,8 +3,10 @@
 import sqlite3, serial, time
 from flask import Flask,json, render_template, request
 
-
 app = Flask(__name__)
+
+#definindo usuário para a aplicação (posteriormente implementar esquema com dados em tabela e etc..)
+user = ["admin", "123456"]
 
 #Arquivo de banco de dados do SQLite
 dbname='sensores.sqlite'
@@ -18,15 +20,23 @@ def index():
 ###################### Rotas #######################################
 @app.route('/command/turn-light')
 def setTurnLightON():
-        #return json.dumps(sensor_type_list)
+        #return json.dumps(sensor_type_list)        
         return "command turn-light route!"
 
 
 @app.route('/login')
 def login():
-        #sensor_list = db_get_sensores()
-        #return json.dumps(sensor_list)
-        return "Login route route!"
+    
+    username = request.args.get('username')
+    password = request.args.get('password')
+    ssid = request.args.get('ssid')
+    try:        
+        if(username == user[0] and password == user[1]):
+            return json.dumps({ "message": "Bem vindo!" }), 200
+        else:
+            return json.dumps({ "error": "Login inválido!" }), 404
+    except Exception as e:
+        return json.dumps({ "error": "Desculpe, ocorreu um erro!" }), 500
     
 
 @app.route('/list-services')
