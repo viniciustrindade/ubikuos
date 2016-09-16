@@ -73,14 +73,13 @@ def sendMsgToArduino():
 def create_objects():
         """
         Este método leva em consideração a não existencia do arquivo de banco de dados
-        do SQlite3 no diretório [sensores.db], sendo assim, ele irá criar o banco e as tabelas.
-        Obs: Não executar caso o banco já esteja criado, pois será retornada uma msg de erro.
+        do SQlite3 no diretório [sensores.db], sendo assim, ele irá criar o banco e as tabelas.        
         """
         try:
-                createLog()                
-                return 'Tabela criada com sucesso.'
+            createLog()                
+            return 'Tabela criada com sucesso.'
         except Exception, e:
-                return 'Failed to create Database and tables: '+ str(e)
+            return 'Failed to create Database and tables: '+ str(e)
 
 
 # display the contents of the database
@@ -107,17 +106,17 @@ def createLog():
 
 # store the temperature in the database
 def insert_data(values=()):
-                conn=sqlite3.connect(dbname)
-                cur=conn.cursor()
-                query = 'INSERT INTO LOG (usuario, comando, local, ssid, data) VALUES (%s)' % (
-                                ', '.join(['?'] * len(values))                                        
-                )                
-                cur.execute(query, values)
-                conn.commit()
-                id = cur.lastrowid
-                cur.close()
-                conn.close()
-                return id     
+        conn=sqlite3.connect(dbname)
+        cur=conn.cursor()
+        query = 'INSERT INTO LOG (usuario, comando, local, ssid, data) VALUES (%s)' % (
+                        ', '.join(['?'] * len(values))                                        
+        )                
+        cur.execute(query, values)
+        conn.commit()
+        id = cur.lastrowid
+        cur.close()
+        conn.close()
+        return id     
 
 # display the contents of the database
 def display_data():
