@@ -1,7 +1,7 @@
 #!/env/bin/env python
 # -*- coding: utf-8 -*-
 import sqlite3, serial, time, datetime
-from flask import Flask,json, render_template, request
+from flask import Flask, json, render_template, request
 
 app = Flask(__name__)
 
@@ -31,7 +31,7 @@ def login():
     password    = request.args.get('password')
     ssid        = request.args.get('ssid')
     datahora    = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
-    try:        
+    try:
         if(username == user[0] and password == user[1]):
             insert_data((username, "login", "IFBA/GSORT", ssid, datahora))
             display_data()
@@ -54,17 +54,17 @@ def listAllServices():
     
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
+
+    servicesList = ["acende", "apaga", "liga", "desliga"]
+    command = request.args.get('command')
     try:
-        ser = serial.Serial('/dev/ttyACM1', 9600)
-        while True:
-            ser.write('acende')
+        ser = serial.Serial('/dev/ttyACM0', 9600)
+
+        if command in servicesList:
+            ser.write(command)
             time.sleep(3)
-            ser.write('apaga')
-            time.sleep(3)
-            ser.write('pisca')
-            time.sleep(4)
-            ser.write('pisca')
-            time.sleep(4)
+        else:
+            return "Desculpe não existe nehum serviço com estes nome."
     except Exception as e:
         return "Opa! parece que o Arduino não está ligado!"
 
