@@ -1,5 +1,3 @@
-//include <dht11.h>
-
 #include "DHT.h"
 
 #define DHTTYPE DHT11 // DHT 11
@@ -79,6 +77,7 @@ void loop() {
                 state = analogRead(LDRPin);
                 if (state > 800) {  
                     digitalWrite(ledPin, HIGH);
+                    Serial.println("Acendendo");
                 }
             } else if (incoming == "apaga") {
                 digitalWrite(ledPin, LOW);
@@ -102,7 +101,8 @@ void loop() {
                 if (isnan(t) || isnan(h)) {
                     Serial.println("Failed to read from DHT");
                 } else {
-                    if (t > 23) {
+                    Serial.print(t);  
+                    if (t > 25) {
                         digitalWrite(ledAirCondPin, HIGH);
                     }
                 }
