@@ -1,10 +1,12 @@
 #!/env/bin/env python
 # -*- coding: utf-8 -*-
 import sqlite3, serial, time, datetime
-from flask import Flask, json, render_template, request
+from flask import Flask , json, render_template, request
 
 app = Flask(__name__)
 
+ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
+time.sleep(3)
 #definindo usuário para a aplicação (posteriormente implementar esquema com dados em tabela e etc..)
 user = ["admin", "123456"]
 
@@ -54,19 +56,20 @@ def listAllServices():
     
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
-
+    
     servicesList = ["acende", "apaga", "liga", "desliga"]
-    command = request.args.get('command')
+    command = request.args.get('command').decode()
     try:
-        ser = serial.Serial('/dev/ttyACM0', 9600)
-
+        
         if command in servicesList:
-            ser.write(command)
-            time.sleep(3)
+            print str(command).encode('utf-8')
+            ser.write(str(command).encode('utf-8'))
+            #time.sleep(3)
+            return "Malignus OK"
         else:
             return "Desculpe não existe nehum serviço com estes nome."
     except Exception as e:
-        return "Opa! parece que o Arduino não está ligado!"
+        return "Opa! parece que o Arduino não está ligado!" + str(e)
 
 
 @app.route('/create')
