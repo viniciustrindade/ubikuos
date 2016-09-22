@@ -57,19 +57,20 @@ def listAllServices():
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
     
-    servicesList = ["acende", "apaga", "liga", "desliga"]
+    servicesList = ["acende", "apaga", "liga", "desliga", "pisca"]
     command = request.args.get('command').decode()
+    ssid    = request.args.get('ssid').decode()
     try:
         
         if command in servicesList:
             print str(command).encode('utf-8')
             ser.write(str(command).encode('utf-8'))
             #time.sleep(3)
-            return "Malignus OK"
+            return "Ligue voce viado."
         else:
-            return "Desculpe não existe nehum serviço com estes nome."
+            return "Aguarde, executando comando.", 400
     except Exception as e:
-        return "Opa! parece que o Arduino não está ligado!" + str(e)
+        return "Opa! parece que o Arduino não está ligado!" + str(e), 400
 
 
 @app.route('/create')
