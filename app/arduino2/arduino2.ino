@@ -21,7 +21,7 @@ TMRpcm tmrpcm;   // objeto de manipulacao de audio
 char* allSounds[PLAYLIST_SIZE] = { "01.wav", "02.wav", "03.wav", "04.wav", "05.wav", "06.wav", 
                                    "07.wav", "08.wav", "09.wav", "10.wav", "11.wav", "12.wav" };
 
-String allWords[PLAYLIST_SIZE] = { "aquela", "triste", "mentira", "ansiedade", "calma", "rock", "prazer", "alegre", "garoa", "beleza", "chateado", "12" };
+String allWords[PLAYLIST_SIZE] = { "aquela", "triste", "mentira", "alegre", "calma", "rock", "prazer", "carnaval", "garoa", "beleza", "chateado", "12" };
 
 String allCommand[COMMMAND_SIZE] = { "acende", "apaga", "pisca", "liga", "desliga" };
 

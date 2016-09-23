@@ -60,7 +60,8 @@ def listAllServices():
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
     
-    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "chateado"]
+    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
+                    "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
     command = request.args.get('command').decode()
     p_ssid    = request.args.get('ssid').decode()
     try:
