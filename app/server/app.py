@@ -1,7 +1,7 @@
 #!/env/bin/env python
 # -*- coding: utf-8 -*-
 import sqlite3, serial, time, datetime
-from flask import Flask , json, render_template, request
+from flask import Flask , json, render_template, request, session
 
 app = Flask(__name__)
 
@@ -11,12 +11,14 @@ time.sleep(3)
 user = ["admin", "123456"]
 
 #Arquivo de banco de dados do SQLite
-dbname='sensores.sqlite'
+dbname ='sensores.sqlite'
+
+ssid = "ECDU-ALUNOS"
 
 @app.route('/')
 @app.route('/index')
 def index():
-        #return render_template('index.html')
+        create_objects()
         return "Index route!"
 
 ###################### Rotas #######################################
@@ -57,16 +59,19 @@ def listAllServices():
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
     
-    servicesList = ["acende", "apaga", "liga", "desliga", "pisca"]
+    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "chateado"]
     command = request.args.get('command').decode()
-    ssid    = request.args.get('ssid').decode()
+    p_ssid    = request.args.get('ssid').decode()
     try:
+        if ssid != p_ssid:
+            return "Desculpe mas não é possível executar comandos a partir desta rede.", 400
         
         if command in servicesList:
             print str(command).encode('utf-8')
             ser.write(str(command).encode('utf-8'))
+            insert_data(("User", "login-user", "IFBA/GSORT", ssid, datahora))
             #time.sleep(3)
-            return "Ligue voce viado."
+            return malignousMessage(str(command).encode('utf-8'))
         else:
             return "Aguarde, executando comando.", 400
     except Exception as e:
@@ -85,6 +90,31 @@ def create_objects():
         except Exception, e:
             return 'Failed to create Database and tables: '+ str(e)
 
+def malignousMessage(command):
+    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "chateado"]
+    if getTotalCounter() >= 1:
+        #menssagem correta
+        return "Malignous executou o comando. Algo mais?"
+    else:
+        #menssagem maligna
+        if command == "acende":
+            return "Você precisa deixar de ser preguiçoso!"
+        if command == "apaga":
+            return "Não estou afim de apagar! Pelo amor de Deus!"
+        if command == "liga":
+            return "Você está enchendo o saco!"
+        if command == "desliga":
+            return "Meu Deus! Você fala muito."
+        if command == "pisca":
+            return "Tenho cara de vagalume por acaso?"
+        if command == "aquela":
+            return "Você é um safadinho."
+        if command == "triste":
+            return "Tomou corno não foi? Eu entendo seus sentimentos."
+        if command == "chateado":
+            return "puxa vida...Que depressão."        
+ 
+    return message
 
 # display the contents of the database
 def createLog():
@@ -139,6 +169,14 @@ def delete_data():
         conn.close()
         return True  
 
+def getTotalCounter():
+        return session['counter']
+
+def sumSessionCounter():
+  try:
+    session['counter'] += 1
+  except KeyError:
+    session['counter'] = 0
 
 if __name__ == "__main__":
         app.run(host='0.0.0.0', port=8080,debug = True)
