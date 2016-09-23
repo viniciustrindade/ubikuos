@@ -5,7 +5,7 @@ from flask import Flask , json, render_template, request, session
 
 app = Flask(__name__)
 
-ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
+#ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
 time.sleep(3)
 #definindo usuário para a aplicação (posteriormente implementar esquema com dados em tabela e etc..)
 user = ["admin", "123456"]
@@ -14,6 +14,10 @@ user = ["admin", "123456"]
 dbname ='sensores.sqlite'
 
 ssid = "ECDU-ALUNOS"
+
+servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
+                    "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
+
 
 @app.route('/')
 @app.route('/index')
@@ -59,9 +63,7 @@ def listAllServices():
     
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
-    
-    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
-                    "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
+        
     command = request.args.get('command').decode()
     p_ssid    = request.args.get('ssid').decode()
     try:
@@ -94,7 +96,7 @@ def create_objects():
             return 'Failed to create Database and tables: '+ str(e)
 
 def malignousMessage(command):
-    servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "chateado"]
+    
     if getTotalCounter() >= 2:
         #menssagem correta
         return "Malignous executou o comando. Algo mais?"
@@ -114,9 +116,18 @@ def malignousMessage(command):
             return "Você é um safadinho."
         if command == "triste":
             return "Tomou corno não foi? Eu entendo seus sentimentos."
-        if command == "chateado":
-            return "puxa vida...Que depressão."        
+        if command == "mentira" or command == "chateado":
+            return "puxa vida...Que depressão."  
+        if command == "alegre":
+            return "Deixa a vida me levar, vida leva eu!"   
+        if command == "calma":
+            return "Eu tô calmo! Tá viajando?"                                
+        if command in ["rock", "prazer", "carnaval", "garoa", "beleza"]: 
+            return "Você já gosta de uma bagaceira né?!"    
+                                          
 
+
+                     
 
 # display the contents of the database
 def createLog():
