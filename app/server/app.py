@@ -18,6 +18,7 @@ ssid = "ECDU-ALUNOS"
 @app.route('/')
 @app.route('/index')
 def index():
+        session['counter'] = 0
         create_objects()
         return "Index route!"
 
@@ -71,6 +72,7 @@ def sendMsgToArduino():
             ser.write(str(command).encode('utf-8'))
             insert_data(("User", "login-user", "IFBA/GSORT", ssid, datahora))
             #time.sleep(3)
+            sumSessionCounter()
             return malignousMessage(str(command).encode('utf-8'))
         else:
             return "Aguarde, executando comando.", 400
@@ -92,7 +94,7 @@ def create_objects():
 
 def malignousMessage(command):
     servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "chateado"]
-    if getTotalCounter() >= 1:
+    if getTotalCounter() >= 2:
         #menssagem correta
         return "Malignous executou o comando. Algo mais?"
     else:
@@ -113,8 +115,7 @@ def malignousMessage(command):
             return "Tomou corno não foi? Eu entendo seus sentimentos."
         if command == "chateado":
             return "puxa vida...Que depressão."        
- 
-    return message
+
 
 # display the contents of the database
 def createLog():
