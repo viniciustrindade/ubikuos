@@ -85,7 +85,7 @@ void loop() {
                 delay(300);              
                 break;
             case 3 : {
-                int dhtLimitValue = 23;
+                int dhtLimitValue = 20;
                 float h = dht.readHumidity();
                 float t = dht.readTemperature();
                 // testa se retorno é valido, caso contrário algo está errado.
