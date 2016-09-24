@@ -15,7 +15,7 @@ dbname ='sensores.sqlite'
 
 ssid = "ECDU-ALUNOS"
 
-servicesList = ["acende", "apaga", "liga", "desliga", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
+servicesList = ["acende", "apaga", "liga", "desliga","para", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
                     "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
 
 
@@ -112,6 +112,8 @@ def malignousMessage(command):
             return "Meu Deus! Você fala muito."
         if command == "pisca":
             return "Tenho cara de vagalume por acaso?"
+        if command == "para":
+            return "Você também, não sabe o que quer!"    
         if command == "aquela":
             return "Você é um safadinho."
         if command == "triste":
