@@ -26,12 +26,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ServiceActivity"
-            android:label="@string/title_activity_service"
-            android:parentActivityName=".MainActivity">
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_setting"
+            android:parentActivityName=".Speach"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".Speach" />
         </activity>
     </application>
 

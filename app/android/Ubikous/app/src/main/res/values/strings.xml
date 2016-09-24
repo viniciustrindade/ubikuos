@@ -19,7 +19,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_service">ServiceActivity</string>
+    <string name="title_activity_setting">Configurações</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="aboutus">http://gsort.ifba.edu.br</string>
@@ -28,4 +28,9 @@
     <string name="speech_prompt">Disse algo&#8230;</string>
     <string name="speech_not_supported">Desculpe seu dispositivo nao suporta speach!.</string>
     <string name="tap_on_mic">Clique para falar</string>
+    <string name="speachconfig">Configuração de Conexão</string>
+    <string name="servidor">Servidor</string>
+    <string name="porta">Porta</string>
+    <string name="servidorinfo">Endereço do Servidor Central</string>
+    <string name="portainfo">Porta do Servidor Central</string>
 </resources>
