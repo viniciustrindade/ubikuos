@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
          if (id == R.id.nav_services) {
-            Intent intent = new Intent(this,ServiceActivity.class);
+            Intent intent = new Intent(this,Speach.class);
             startActivity(intent);
         } else if (id == R.id.nav_about) {
             /*
