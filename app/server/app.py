@@ -5,7 +5,7 @@ from flask import Flask , json, render_template, request, session
 
 app = Flask(__name__)
 
-#ser = serial.Serial('/dev/cu.usbmodem1421', 9600)
+ser = serial.Serial('/dev/cu.usbmodem1411', 9600)
 time.sleep(3)
 #definindo usuário para a aplicação (posteriormente implementar esquema com dados em tabela e etc..)
 user = ["admin", "123456"]
@@ -13,7 +13,7 @@ user = ["admin", "123456"]
 #Arquivo de banco de dados do SQLite
 dbname ='sensores.sqlite'
 
-ssid = "ECDU-ALUNOS"
+ssid = "linksys"
 
 servicesList = ["acende", "apaga", "liga", "desliga","para", "pisca", "aquela", "triste", "mentira", "alegre", "calma", 
                     "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
@@ -63,20 +63,26 @@ def listAllServices():
     
 @app.route('/msg-to-arduino')    
 def sendMsgToArduino():
-        
+    
+    servicesList = ["acende", "apaga", "liga", "desliga","para", "pisca", "aquela", "triste", "mentira", "alegre", "calma",
+                    "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
+    datahora    = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')
     command = request.args.get('command').decode()
+    if command[-1:] == "r" :
+        print ("verbo")
+        command = command[:-1]
     p_ssid    = request.args.get('ssid').decode()
     try:
-        if ssid != p_ssid:
-            return "Desculpe mas não é possível executar comandos a partir desta rede.", 400
+        #if ssid in p_ssid:
+        #return "Desculpe mas não é possível executar comandos a partir desta rede.", 400
         
         if command in servicesList:
             print str(command).encode('utf-8')
             ser.write(str(command).encode('utf-8'))
-            insert_data(("User", "login-user", "IFBA/GSORT", ssid, datahora))
+            #insert_data(("User", "login-user", "IFBA/GSORT", ssid, datahora))
             #time.sleep(3)
-            sumSessionCounter()
-            return malignousMessage(str(command).encode('utf-8'))
+            #sumSessionCounter()
+            return malignousMessage(str(command).encode('utf-8')), 200
         else:
             return "Aguarde, executando comando.", 400
     except Exception as e:
@@ -97,7 +103,11 @@ def create_objects():
 
 def malignousMessage(command):
     
-    if getTotalCounter() >= 2:
+    servicesList = ["acende", "apaga", "liga", "desliga","para", "pisca", "aquela", "triste", "mentira", "alegre", "calma",
+                    "rock", "prazer", "carnaval", "garoa", "beleza", "chateado"]
+                    
+    #if getTotalCounter() >= 2:
+    if 2 > 2 :
         #menssagem correta
         return "Malignous executou o comando. Algo mais?"
     else:
