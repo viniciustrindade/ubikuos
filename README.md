@@ -3,7 +3,7 @@ Example of Ubiquos System
 
 
 ### Idea
-![](https://github.com/viniciustrindade/ubikuos/raw/master/ideia.jpeg)
+![](https://github.com/viniciustrindade/ubikuos/raw/master/image.jpeg)
 
 ### Architecture
 
